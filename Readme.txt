@@ -1,0 +1,1 @@
+Environmental Monitor Project. Using Raspberry Pis to monitor the environment :)
