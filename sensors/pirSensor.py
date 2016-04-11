@@ -31,5 +31,4 @@ while True:
         print("Motion detected")
 
         seconds = 1
-        counter = 0	
-#
+        counter = 0

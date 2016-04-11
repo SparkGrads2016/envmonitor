@@ -1,11 +1,18 @@
+import sys
 import tsl2591
-import time
 
-tsl = tsl2591.Tsl2591()  # initialize
+# Initialise the light sensor
+def initLight():
+    tsl = tsl2591.Tsl2591()  # initialise
+    return tsl
 
-while True:
+# Return the lux, full spectrum and IR light
+def getLight(tsl):
     full, ir = tsl.get_full_luminosity()  # read raw values (full spectrum and ir spectrum)
     lux = tsl.calculate_lux(full, ir)  # convert raw values to lux
-    print('Lux=%d, Full Spectrum=%d, IR=%d' % (lux, full, ir))
     
-    time.sleep(1.0)
+    if lux is not None and full is not None and ir is not None:
+        return lux, full, ir
+    else:
+        print 'Failed to get light reading.'
+        sys.exit(1)
