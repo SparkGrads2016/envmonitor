@@ -27,5 +27,23 @@ def getTempHum(pin):
     if humidity is not None and temperature is not None:
         return temperature, humidity
     else:
-	print 'Failed to get temperature and humidity reading.'
-	sys.exit(1)
+		print 'Failed to get temperature and humidity reading.'
+		sys.exit(1)
+	
+def getTemp(pin):
+    humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
+    
+    if humidity is not None and temperature is not None:
+        return temperature
+    else:
+		print 'Failed to get temperature reading.'
+		sys.exit(1)
+
+def getHum(pin):
+    humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
+    
+    if humidity is not None and temperature is not None:
+        return humidity
+    else:
+		print 'Failed to get humidity reading.'
+		sys.exit(1)
