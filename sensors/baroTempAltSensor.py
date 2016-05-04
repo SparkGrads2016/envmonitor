@@ -12,6 +12,7 @@ def getTemp():
 		
 def getBaro():
 	baro = BMP085.BMP085().read_pressure()
+	baro = baro / 100.0 # Convert to hectopascals
 	
 	if baro is not None:
 		return baro
@@ -30,6 +31,7 @@ def getAlt():
 		
 def getSeaPres():
 	seaPres = BMP085.BMP085().read_sealevel_pressure()
+	seaPres = seaPres / 100.0 # Convert to hectopascals
 	
 	if seaPres is not None:
 		return seaPres
