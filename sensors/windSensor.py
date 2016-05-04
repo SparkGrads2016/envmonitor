@@ -2,12 +2,12 @@ import ADC
 import time
 
 # Change these to constants/defines
-bitMin = 125 # Corresponds to 0.4V (0m/s)
-bitMax = 621 # Corresponds to 2V (32.4m/s)
+bitMin = 125 				# Corresponds to 0.4V (0m/s)
+bitMax = 621				# Corresponds to 2V (32.4m/s)
 bitRange = bitMax - bitMin
 
 speedMax = 32.4
-speedConst = speedMax/bitRange
+speedConst = speedMax/bitRange # The speed of one bit
 
 def getWindSpeed(adc_pin):
 	# Read the ADC pin
@@ -17,6 +17,8 @@ def getWindSpeed(adc_pin):
 	bits = int(windBits)
 	
 	# Convert the ADC output to a voltage value
+	# If the ADC reading is above or below the expected threshold values
+	# set them to the threshold values. Else calculate as normal
 	if (bits < bitMin):
 		voltage = 0.4
 	elif (bits > bitMax):
@@ -25,13 +27,18 @@ def getWindSpeed(adc_pin):
 	else:
 		voltage = ((bits * 3.3) / 1024)
 		
-	# Shift bits for speed calculation
+	# Shift bits for speed calculation. This is the actual increase in
+	# speed (bits) as the anemometer will output a base of 125 bits (0.4V)
+	# when not moving
 	bitShift = bits - bitMin
 		
-	# Speed is 0m/s
+	# If bitShift result is less than 0, change to 0 before wind speed
+	# calculation
 	if (bitShift < 0):
 		bitShift = 0
-			
+	
+	# As the increase in speed is linear, multiply the number of bits by
+	# the speed constant
 	speedM = speedConst * bitShift # Speed increases linearly
 	speedKm = speedM * 3.6		   # Convert from metres to kilometres
 	

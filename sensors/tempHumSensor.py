@@ -1,9 +1,7 @@
 import sys
 import Adafruit_DHT
-#import time
 
 sensor = 22 #DHT22 sensor
-#pin = 24
 
 # Un-comment the line below to convert the temperature to Fahrenheit.
 # temperature = temperature * 9/5.0 + 32
