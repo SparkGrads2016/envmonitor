@@ -16,7 +16,9 @@ sensor = SI1145.SI1145()
 si1145 = uv.initUV()
 
 # Use to convert the accelerometer readings into m/s^2
-metreConst = 101.8
+metreConst_x = 103.60
+metreConst_y = 104.70
+metreConst_z = 101.85
 
 while True:
 	
@@ -29,13 +31,13 @@ while True:
     uvIndex = UV / 100.0
     
     # Temperature and Humidity
-    temp = BTA.getTemp()
+    temperature = BTA.getTemperature()
     hum = tempHum.getHum(pinTempHum)
     
     # Barometer and Altometer
-    baro = BTA.getBaro()
-    alt = BTA.getAlt()
-    seaPres = BTA.getSeaPres()
+    pressure = BTA.getPressure()
+    altitude = BTA.getAltitude()
+    sealevelPressure = BTA.getSealevelPressure()
     
     # Accelerometer and Magnetometer
     accel = accelMag.getAccel()
@@ -47,17 +49,16 @@ while True:
     # Print out variables
     print ('Lux = %d \nFull Spectrum = %d \nIR = %d' % (lux, full, ir))
     print ('UV Index = ' + str(uvIndex) + '\n')
-    print ('Temperature = {0:0.2f}*C'.format(temp))
+    print ('Temperature = {0:0.2f}*C'.format(temperature))
     print ('Humidity = {0:0.2f}%\n'.format(hum))
-    print ('Barometric Pressure = {0:0.2f}hPa'.format(baro))
-    print ('Altitude = {0:0.2f}m'.format(alt))
-    print ('Sealevel Pressure = {0:0.2f}hPa\n'.format(seaPres))
-    print ('Accel X = {0:0.2f}m/s^2  Accel Y = {1:0.2f}m/s^2  Accel Z = {2:0.2f}m/s^2'.format(accel_x/metreConst, accel_y/metreConst, accel_z/metreConst))
+    print ('Barometric Pressure = {0:0.2f}hPa'.format(pressure))
+    print ('Altitude = {0:0.2f}m'.format(altitude))
+    print ('Sealevel Pressure = {0:0.2f}hPa\n'.format(sealevelPressure))
+    print ('Accel X = {0:0.2f}m/s^2  Accel Y = {1:0.2f}m/s^2  Accel Z = {2:0.2f}m/s^2'.format(accel_x/metreConst_x, accel_y/metreConst_y, accel_z/metreConst_z))
     print ('Mag   X = {0}        Mag   Y = {1}        Mag   Z = {2}\n'.format(mag_x, mag_y, mag_z))
     print ('Bits = {0} Voltage = {1:0.2f}V Wind Speed  = {2:0.3f}m/s Wind Speed = {3:0.3f}km/h\n'.format(windBits, windVoltage, windSpeedM, windSpeedKm))
     
     print ('End of loop    Now sleeping Readings on ' + strftime("%Y-%m-%d") + ' at ' + strftime("%H:%M:%S"))
-    
     print ('\n-----------------------------------------------------------------------------\n')
     
-    time.sleep(10.0) # Change number to alter how often monitor gets information in seconds
+    time.sleep(1.0) # Change number to alter how often monitor gets information in seconds
