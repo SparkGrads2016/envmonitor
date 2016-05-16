@@ -5,9 +5,11 @@ import uvSensor as uv
 import SI1145.SI1145 as SI1145
 import accelMagSensor as accelMag
 import windSensor as wind
+import RPi.GPIO as GPIO
 import time
 from time import strftime
 
+# Sensor pins
 pinTempHum = 18 # Set the TempHum pin
 adcWind = 0		# Set the pin on the ADC getting wind speed
 
@@ -23,6 +25,26 @@ metreConst_z = 101.85
 # Set how often the monitor will output data
 sleepTime = 10.0
 
+# LED pin mapping
+ledBlue = 17
+ledGreen = 27
+
+# LED setup
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(ledBlue,GPIO.OUT)
+GPIO.setup(ledGreen,GPIO.OUT)
+GPIO.output(ledGreen,GPIO.LOW)
+
+GPIO.output(ledBlue,GPIO.HIGH)
+time.sleep(1.0)
+GPIO.output(ledBlue,GPIO.LOW)
+
+def sendSuccess():
+	GPIO.output(ledGreen,GPIO.HIGH)
+	time.sleep(1.0)
+	GPIO.output(ledGreen,GPIO.LOW)
+
 while True:
 	# Process start time
     t0 = time.time()
@@ -32,7 +54,7 @@ while True:
     
     # Light
     lux, full, ir = light.getLight(tsl2591)
-    #uv = uv.getUV(si1145)
+    uv = uv.getUV(si1145)
     UV = sensor.readUV()
     uvIndex = UV / 100.0
     
@@ -75,6 +97,8 @@ while True:
     #print ('End of loop    Now sleeping Readings on ' + strftime("%Y-%m-%d") + ' at ' + strftime("%H:%M:%S"))
     
     print ('-----------------------------------------------------------------------------\n')
+    
+    #sendSuccess()
     
     # For debugging
     #t3 = time.time()
