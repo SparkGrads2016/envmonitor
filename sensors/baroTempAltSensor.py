@@ -14,7 +14,7 @@ sealevelPressure = 101325.0
 pressureOffset = 180.0
 
 # The altitude offset for calibration
-altitudeOffset = 17.16
+altitudeOffset = 31.67
 
 def getTemperature():
 	temperature = BMP085.BMP085().read_temperature()
@@ -46,7 +46,7 @@ def getAltitude():
 	rawAltitude = 44330.0 * (1.0 - pow(pressure / sealevelPressure, (1.0/5.255)))
 	
 	# Calibrate the altitude value
-	calibratedAltitude = rawAltitude + altitudeOffset
+	calibratedAltitude = rawAltitude - altitudeOffset
 	
 	if calibratedAltitude is not None:
 		return calibratedAltitude
