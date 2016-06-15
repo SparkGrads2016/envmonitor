@@ -11,6 +11,8 @@ SPIMISO = 24 # Dout
 SPIMOSI = 25 # Din
 SPICS = 12	 # CS
 
+GPIO.setwarnings(False)
+
 # Set up the SPI interface pins
 GPIO.setup(SPIMOSI, GPIO.OUT)
 GPIO.setup(SPIMISO, GPIO.IN)
