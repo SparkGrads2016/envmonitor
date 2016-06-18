@@ -8,12 +8,13 @@ import windSensor as wind
 import RPi.GPIO as GPIO
 import time
 from time import strftime
+from ConfigParser import SafeConfigParser
 
 # Sensor pins
 pinTempHum = 18 # Set the TempHum pin
-adcWind = 0	# Set the pin on the ADC getting wind speed
+adcWind = 0     # Set the pin on the ADC getting wind speed
 
-#tsl2591 = light.initLight() 
+#tsl2591 = light.initLight()
 sensor = SI1145.SI1145()
 #si1145 = uv.initUV()
 
@@ -26,24 +27,62 @@ metreConst_z = 101.85
 sleepTime = 3.0
 
 # LED pin mapping
-ledBlue = 17
+ledRed = 21
 ledGreen = 20 #27
 
 # LED setup
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
-GPIO.setup(ledBlue,GPIO.OUT)
+GPIO.setup(ledRed,GPIO.OUT)
 GPIO.setup(ledGreen,GPIO.OUT)
+GPIO.output(ledRed,GPIO.LOW)
 GPIO.output(ledGreen,GPIO.LOW)
 
-#GPIO.output(ledBlue,GPIO.HIGH)
-#time.sleep(1.0)
-#GPIO.output(ledBlue,GPIO.LOW)
-
 def sendSuccess():
-	GPIO.output(ledGreen,GPIO.HIGH)
-	time.sleep(1.0)
-	GPIO.output(ledGreen,GPIO.LOW)
+        GPIO.output(ledGreen,GPIO.HIGH)
+        time.sleep(1.0)
+        GPIO.output(ledGreen,GPIO.LOW)
+
+def sendFailure():
+        GPIO.output(ledRed,GPIO.HIGH)
+        time.sleep(1.0)
+        GPIO.output(ledRed,GPIO.LOW)
+
+
+parser = SafeConfigParser()
+parser.read('envMonitorSettings.ini')
+#for section_name in parser.sections():
+#    print 'Section:', section_name
+#    print '  Options:', parser.options(section_name)
+#    for name, value in parser.items(section_name):
+#        print '  %s = %s' % (name, value)
+#    print
+
+# Check if section in config file exists
+if parser.has_section('sensors'):
+	#sendFailure()
+	#sendFailure()
+	print ('Section correct')
+else:
+	print ('Section in config file does not appear to exist')
+
+
+for sensorName,sensorValue in parser.items('sensors'):
+	#print '  %s = %s' % (sensorName, sensorValue)
+
+	#print (type(name))
+	#print (type(value)
+
+	if (sensorName == 'lux') and (sensorValue == 'true'):
+		print ('Lux found')
+		lux, full, ir = light.getLight()
+		print ('Lux = %d \nFull Spectrum = %d \nIR = %d' % (lux, full, ir))
+		sendSuccess()
+		break
+	elif (sensorName == 'lux') and (sensorValue == 'false'):
+		print ('No light output specified')
+		sendFailure()
+		break
 
 # Process start time
 t0 = time.time()
@@ -52,52 +91,52 @@ t0 = time.time()
 #print ('Start of loop Environmental Readings on ' + strftime("%Y-%m-%d") + ' at ' + strftime("%H:%M:%S") + '\n')
 
 # Light
-lux, full, ir = light.getLight() #lux, full, ir = light.getLight(tsl2591)
-#uv = uv.getUV(si1145)
-UV = sensor.readUV()
-uvIndex = UV / 100.0
+#lux, full, ir = light.getLight() #lux, full, ir = light.getLight(tsl2591)
+ #uv = uv.getUV(si1145)
+#UV = sensor.readUV()
+#uvIndex = UV / 100.0
 
 # Temperature and Humidity
-temperature = BTA.getTemperature()
+#temperature = BTA.getTemperature()
 #hum = tempHum.getHum(pinTempHum)
 
 # Barometer and Altometer
-pressure = BTA.getPressure()
-altitude = BTA.getAltitude()
-sealevelPressure = BTA.getSealevelPressure()
+#pressure = BTA.getPressure()
+#altitude = BTA.getAltitude()
+#sealevelPressure = BTA.getSealevelPressure()
 
 # Accelerometer and Magnetometer
-accel = accelMag.getAccel()
-accel_x, accel_y, accel_z = accel
-mag = accelMag.getMag()
-mag_x, mag_y, mag_z = mag
-windBits, windVoltage, windSpeedM, windSpeedKm = wind.getWindSpeed(adcWind)
+#accel = accelMag.getAccel()
+#accel_x, accel_y, accel_z = accel
+#mag = accelMag.getMag()
+#mag_x, mag_y, mag_z = mag
+#windBits, windVoltage, windSpeedM, windSpeedKm = wind.getWindSpeed(adcWind)
 
 # Time to sleep
 t1 = time.time()		# Process end time
 t2 = t1 - t0			# Calculate process time to get sensor data
 sleep = sleepTime - t2	# Calculate the difference in specified sleep time and sensor process time
-time.sleep(sleep)		# Sleep for that difference
+#time.sleep(sleep)		# Sleep for that difference
 
 # Print out variables
-print (strftime("%Y-%m-%d") + ' ' + strftime("%H:%M:%S") + '\n')
-print ('Lux = %d \nFull Spectrum = %d \nIR = %d' % (lux, full, ir))
-print ('UVIndex = ' + str(uvIndex))
-print ('Temperature = {0:0.2f}'.format(temperature))
+#print (strftime("%Y-%m-%d") + ' ' + strftime("%H:%M:%S") + '\n')
+#print ('Lux = %d \nFull Spectrum = %d \nIR = %d' % (lux, full, ir))
+#print ('UVIndex = ' + str(uvIndex))
+#print ('Temperature = {0:0.2f}'.format(temperature))
 #print ('Humidity = {0:0.2f}'.format(hum))
-print ('BarometricPressure = {0:0.2f}'.format(pressure))
-print ('Altitude = {0:0.2f}'.format(altitude))
-print ('SealevelPressure = {0:0.2f}'.format(sealevelPressure))
-print ('AccelX = {0:0.2f}\nAccelY = {1:0.2f}\nAccelZ = {2:0.2f}'.format(accel_x/metreConst_x, accel_y/metreConst_y, accel_z/metreConst_z))
-print ('MagX = {0}\nMagY = {1}\nMagZ = {2}'.format(mag_x, mag_y, mag_z))
-print ('WindSpeedM  = {0:0.3f}\nWindSpeedKm = {1:0.3f}'.format(windSpeedM, windSpeedKm))
+#print ('BarometricPressure = {0:0.2f}'.format(pressure))
+#print ('Altitude = {0:0.2f}'.format(altitude))
+#print ('SealevelPressure = {0:0.2f}'.format(sealevelPressure))
+#print ('AccelX = {0:0.2f}\nAccelY = {1:0.2f}\nAccelZ = {2:0.2f}'.format(accel_x/metreConst_x, accel_y/metreConst_y, accel_z/metreConst_z))
+#print ('MagX = {0}\nMagY = {1}\nMagZ = {2}'.format(mag_x, mag_y, mag_z))
+#print ('WindSpeedM  = {0:0.3f}\nWindSpeedKm = {1:0.3f}'.format(windSpeedM, windSpeedKm))
 
 # For debugging
 #print ('End of loop    Now sleeping Readings on ' + strftime("%Y-%m-%d") + ' at ' + strftime("%H:%M:%S"))
   
 #print ('-----------------------------------------------------------------------------\n')
 
-sendSuccess()
+#sendSuccess()
 
 # For debugging
 #t3 = time.time()
