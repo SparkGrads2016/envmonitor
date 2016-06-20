@@ -27,7 +27,7 @@ sleepTime = 3.0
 
 # LED pin mapping
 ledRed = 21
-ledGreen = 20 #27
+ledGreen = 20
 
 # LED setup
 GPIO.setmode(GPIO.BCM)
@@ -62,8 +62,6 @@ parser.read('envMonitorSettings.ini')
 
 # Check if section in config file exists
 if parser.has_section('sensors'):
-	#sendFailure()
-	#sendFailure()
 	print ('Section correct')
 else:
 	print ('Section in config file does not appear to exist')
@@ -71,31 +69,42 @@ else:
 # Process start time
 t0 = time.time()
 
+# The string to output
+sensorPrint = ''
+
+# Loop through 'sensors' part of config file and extract data from all sensors selected
 for sensorName,sensorValue in parser.items('sensors'):
 	#print '  %s = %s' % (sensorName, sensorValue)
-
+	
+	# Output type
+	if (sensorName == 'outputtype'):
+		print ('Output Type specified')
+		sensorPrint += sensorValue
+	if (sensorName == 'location'):
+		print ('Location specified')
+		sensorPrint += ',location=' + sensorValue + ' '
 	# Acceleration
 	if (sensorName == 'acceleration') and (sensorValue == 'true'):
 		print ('* Acceleration found')
 		accel = accelMag.getAccel()
 		accel_x, accel_y, accel_z = accel
-		print ('AccelX = {0:0.2f}\nAccelY = {1:0.2f}\nAccelZ = {2:0.2f}'.format(accel_x/metreConst_x, accel_y/metreConst_y, accel_z/metreConst_z))
+		sensorPrint += ('accelX={0:0.2f},accelY={1:0.2f},accelZ={2:0.2f}'.format(accel_x/metreConst_x, accel_y/metreConst_y, accel_z/metreConst_z))
 	elif (sensorName == 'acceleration') and (sensorValue == 'false'):
 		print ('* No Acceleration output')
 	# Altitude
 	if (sensorName == 'altitude') and (sensorValue == 'true'):
 		print ('* Alitude found')
 		altitude = BTA.getAltitude()
-		print ('Altitude = {0:0.2f}'.format(altitude))
+		sensorPrint += (',altitude={0:0.2f}'.format(altitude))
 	elif (sensorName == 'altitude') and (sensorValue == 'false'):
 		print ('* No Altitude output')
 	# Barometric Pressure
 	if (sensorName == 'barometricpressure') and (sensorValue == 'true'):
 		print ('* Barometric Pressure found')
 		pressure = BTA.getPressure()
-		print ('BarometricPressure = {0:0.2f}'.format(pressure))
+		sensorPrint += (',barometricPressure={0:0.2f}'.format(pressure))
 	elif (sensorName == 'barometricpressure') and (sensorValue == 'false'):
-		print ('* No bBrometric Pressure output')
+		print ('* No Barometric Pressure output')
 	# Full Spectrum
 	if (sensorName == 'fullspectrum') and (sensorValue == 'true'):
 		print ('* Full Spectrum found')
@@ -115,29 +124,29 @@ for sensorName,sensorValue in parser.items('sensors'):
 	if (sensorName == 'lux') and (sensorValue == 'true'):
 		print ('* Lux found')
 		lux, full, ir = light.getLight()
-		print ('Lux = %d \nFull Spectrum = %d \nIR = %d' % (lux, full, ir))
+		sensorPrint += (',lux=%d,fullSpectrum=%d,ir=%d' % (lux, full, ir))
 	elif (sensorName == 'lux') and (sensorValue == 'false'):
 		print ('* No Lux output')
 	# Magnetic Flux
 	if (sensorName == 'magneticflux') and (sensorValue == 'true'):
-		print ('* Magnetic  found')
+		print ('* Magnetic Flux found')
 		mag = accelMag.getMag()
 		mag_x, mag_y, mag_z = mag
-		print ('MagX = {0}\nMagY = {1}\nMagZ = {2}'.format(mag_x, mag_y, mag_z))
+		sensorPrint += (',magX={0},magY={1},magZ={2}'.format(mag_x, mag_y, mag_z))
 	elif (sensorName == 'magneticflux') and (sensorValue == 'false'):
 		print ('* No Magnetic Flux output')
 	# Sealevel Pressure
 	if (sensorName == 'sealevelpressure') and (sensorValue == 'true'):
-		print ('* Sealevel Pressure  found')
+		print ('* Sealevel Pressure found')
 		sealevelPressure = BTA.getSealevelPressure()
-		print ('SealevelPressure = {0:0.2f}'.format(sealevelPressure))
+		sensorPrint += (',sealevelPressure={0:0.2f}'.format(sealevelPressure))
 	elif (sensorName == 'sealevelpressure') and (sensorValue == 'false'):
 		print ('* No Sealevel Pressure output')
 	# Temperature
 	if (sensorName == 'temperature') and (sensorValue == 'true'):
 		print ('* Temperature  found')
 		temperature = BTA.getTemperature()
-		print ('Temperature = {0:0.2f}'.format(temperature))
+		sensorPrint += (',temperature={0:0.2f}'.format(temperature))
 	elif (sensorName == 'temperature') and (sensorValue == 'false'):
 		print ('* No Temperature output')
 	# UV Index
@@ -145,19 +154,19 @@ for sensorName,sensorValue in parser.items('sensors'):
 		print ('* UV Index found')
 		UV = sensor.readUV()
 		uvIndex = UV / 100.0
-		print ('UVIndex = ' + str(uvIndex))
+		sensorPrint += (',uvIndex=' + str(uvIndex))
 	elif (sensorName == 'uvindex') and (sensorValue == 'false'):
 		print ('* No UV Index output')
 	# Wind Speed Km (Both Km and m for now)
 	if (sensorName == 'windspeedkm') and (sensorValue == 'true'):
-		print ('* Wind Speed (Km)  found')
+		print ('* Wind Speed (Km) found')
 		windBits, windVoltage, windSpeedM, windSpeedKm = wind.getWindSpeed(adcWind)
-		print ('WindSpeedM  = {0:0.3f}\nWindSpeedKm = {1:0.3f}'.format(windSpeedM, windSpeedKm))
+		sensorPrint += (',windSpeedM={0:0.3f},windSpeedKm={1:0.3f}'.format(windSpeedM, windSpeedKm))
 	elif (sensorName == 'windspeedkm') and (sensorValue == 'false'):
 		print ('* No Wind Speed (Km) output')
 	# Wind Speed m
 	if (sensorName == 'windspeedm') and (sensorValue == 'true'):
-		print ('* Wind Speed (m)  found')
+		print ('* Wind Speed (m) found')
 	elif (sensorName == 'windspeedm') and (sensorValue == 'false'):
 		print ('* No Wind Speed (m) output')
 	
@@ -212,6 +221,8 @@ for sensorName,sensorValue in parser.items('sensors'):
 #print ('-----------------------------------------------------------------------------\n')
 
 #sendSuccess()
+
+print (sensorPrint)
 
 # For debugging
 t3 = time.time()
