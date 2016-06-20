@@ -14,7 +14,6 @@ from ConfigParser import SafeConfigParser
 pinTempHum = 18 # Set the TempHum pin
 adcWind = 0     # Set the pin on the ADC getting wind speed
 
-#tsl2591 = light.initLight()
 sensor = SI1145.SI1145()
 #si1145 = uv.initUV()
 
@@ -38,25 +37,28 @@ GPIO.setup(ledGreen,GPIO.OUT)
 GPIO.output(ledRed,GPIO.LOW)
 GPIO.output(ledGreen,GPIO.LOW)
 
+# Turns the green LED on for 1 second
 def sendSuccess():
         GPIO.output(ledGreen,GPIO.HIGH)
         time.sleep(1.0)
         GPIO.output(ledGreen,GPIO.LOW)
 
+# Turns the red LED on for 1 second
 def sendFailure():
         GPIO.output(ledRed,GPIO.HIGH)
         time.sleep(1.0)
         GPIO.output(ledRed,GPIO.LOW)
 
-
+# Initialise config parser and read in the config file 'envMonitorSettings.ini'
 parser = SafeConfigParser()
 parser.read('envMonitorSettings.ini')
+
+# For debugging. Prints out the contents of the config file
 #for section_name in parser.sections():
 #    print 'Section:', section_name
 #    print '  Options:', parser.options(section_name)
 #    for name, value in parser.items(section_name):
 #        print '  %s = %s' % (name, value)
-#    print
 
 # Check if section in config file exists
 if parser.has_section('sensors'):
@@ -66,26 +68,99 @@ if parser.has_section('sensors'):
 else:
 	print ('Section in config file does not appear to exist')
 
+# Process start time
+t0 = time.time()
 
 for sensorName,sensorValue in parser.items('sensors'):
 	#print '  %s = %s' % (sensorName, sensorValue)
 
-	#print (type(name))
-	#print (type(value)
-
+	# Acceleration
+	if (sensorName == 'acceleration') and (sensorValue == 'true'):
+		print ('* Acceleration found')
+		accel = accelMag.getAccel()
+		accel_x, accel_y, accel_z = accel
+		print ('AccelX = {0:0.2f}\nAccelY = {1:0.2f}\nAccelZ = {2:0.2f}'.format(accel_x/metreConst_x, accel_y/metreConst_y, accel_z/metreConst_z))
+	elif (sensorName == 'acceleration') and (sensorValue == 'false'):
+		print ('* No Acceleration output')
+	# Altitude
+	if (sensorName == 'altitude') and (sensorValue == 'true'):
+		print ('* Alitude found')
+		altitude = BTA.getAltitude()
+		print ('Altitude = {0:0.2f}'.format(altitude))
+	elif (sensorName == 'altitude') and (sensorValue == 'false'):
+		print ('* No Altitude output')
+	# Barometric Pressure
+	if (sensorName == 'barometricpressure') and (sensorValue == 'true'):
+		print ('* Barometric Pressure found')
+		pressure = BTA.getPressure()
+		print ('BarometricPressure = {0:0.2f}'.format(pressure))
+	elif (sensorName == 'barometricpressure') and (sensorValue == 'false'):
+		print ('* No bBrometric Pressure output')
+	# Full Spectrum
+	if (sensorName == 'fullspectrum') and (sensorValue == 'true'):
+		print ('* Full Spectrum found')
+	elif (sensorName == 'fullspectrum') and (sensorValue == 'false'):
+		print ('* No Full Spectrum output')
+	# Humidity
+	if (sensorName == 'humidity') and (sensorValue == 'true'):
+		print ('* Humidity found')
+	elif (sensorName == 'humidity') and (sensorValue == 'false'):
+		print ('* No Humidity output')
+	# IR
+	if (sensorName == 'ir') and (sensorValue == 'true'):
+		print ('* IR found')
+	elif (sensorName == 'ir') and (sensorValue == 'false'):
+		print ('* No IR output')
+	# Lux (All light)
 	if (sensorName == 'lux') and (sensorValue == 'true'):
-		print ('Lux found')
+		print ('* Lux found')
 		lux, full, ir = light.getLight()
 		print ('Lux = %d \nFull Spectrum = %d \nIR = %d' % (lux, full, ir))
-		sendSuccess()
-		break
 	elif (sensorName == 'lux') and (sensorValue == 'false'):
-		print ('No light output specified')
-		sendFailure()
-		break
-
-# Process start time
-t0 = time.time()
+		print ('* No Lux output')
+	# Magnetic Flux
+	if (sensorName == 'magneticflux') and (sensorValue == 'true'):
+		print ('* Magnetic  found')
+		mag = accelMag.getMag()
+		mag_x, mag_y, mag_z = mag
+		print ('MagX = {0}\nMagY = {1}\nMagZ = {2}'.format(mag_x, mag_y, mag_z))
+	elif (sensorName == 'magneticflux') and (sensorValue == 'false'):
+		print ('* No Magnetic Flux output')
+	# Sealevel Pressure
+	if (sensorName == 'sealevelpressure') and (sensorValue == 'true'):
+		print ('* Sealevel Pressure  found')
+		sealevelPressure = BTA.getSealevelPressure()
+		print ('SealevelPressure = {0:0.2f}'.format(sealevelPressure))
+	elif (sensorName == 'sealevelpressure') and (sensorValue == 'false'):
+		print ('* No Sealevel Pressure output')
+	# Temperature
+	if (sensorName == 'temperature') and (sensorValue == 'true'):
+		print ('* Temperature  found')
+		temperature = BTA.getTemperature()
+		print ('Temperature = {0:0.2f}'.format(temperature))
+	elif (sensorName == 'temperature') and (sensorValue == 'false'):
+		print ('* No Temperature output')
+	# UV Index
+	if (sensorName == 'uvindex') and (sensorValue == 'true'):
+		print ('* UV Index found')
+		UV = sensor.readUV()
+		uvIndex = UV / 100.0
+		print ('UVIndex = ' + str(uvIndex))
+	elif (sensorName == 'uvindex') and (sensorValue == 'false'):
+		print ('* No UV Index output')
+	# Wind Speed Km (Both Km and m for now)
+	if (sensorName == 'windspeedkm') and (sensorValue == 'true'):
+		print ('* Wind Speed (Km)  found')
+		windBits, windVoltage, windSpeedM, windSpeedKm = wind.getWindSpeed(adcWind)
+		print ('WindSpeedM  = {0:0.3f}\nWindSpeedKm = {1:0.3f}'.format(windSpeedM, windSpeedKm))
+	elif (sensorName == 'windspeedkm') and (sensorValue == 'false'):
+		print ('* No Wind Speed (Km) output')
+	# Wind Speed m
+	if (sensorName == 'windspeedm') and (sensorValue == 'true'):
+		print ('* Wind Speed (m)  found')
+	elif (sensorName == 'windspeedm') and (sensorValue == 'false'):
+		print ('* No Wind Speed (m) output')
+	
 
 # For debugging
 #print ('Start of loop Environmental Readings on ' + strftime("%Y-%m-%d") + ' at ' + strftime("%H:%M:%S") + '\n')
@@ -113,9 +188,9 @@ t0 = time.time()
 #windBits, windVoltage, windSpeedM, windSpeedKm = wind.getWindSpeed(adcWind)
 
 # Time to sleep
-t1 = time.time()		# Process end time
-t2 = t1 - t0			# Calculate process time to get sensor data
-sleep = sleepTime - t2	# Calculate the difference in specified sleep time and sensor process time
+#t1 = time.time()		# Process end time
+#t2 = t1 - t0			# Calculate process time to get sensor data
+#sleep = sleepTime - t2	# Calculate the difference in specified sleep time and sensor process time
 #time.sleep(sleep)		# Sleep for that difference
 
 # Print out variables
@@ -139,5 +214,5 @@ sleep = sleepTime - t2	# Calculate the difference in specified sleep time and se
 #sendSuccess()
 
 # For debugging
-#t3 = time.time()
-#print ('Total time = {0}'.format(t3-t0))
+t3 = time.time()
+print ('Total time = {0}'.format(t3-t0))
