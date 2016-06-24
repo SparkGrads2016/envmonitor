@@ -15,10 +15,12 @@ metreConst_x = 103.60
 metreConst_y = 104.70
 metreConst_z = 101.85
 
+# Initialise UV sensor
+sensor = SI1145.SI1145()
+
 def altitude():
 	altitude = BTA.getAltitude()
 	return (',altitude={0:0.2f}'.format(altitude))
-
 
 def parseSensor(sensorName,sensorValue):
 	# Output type
@@ -69,7 +71,6 @@ def parseSensor(sensorName,sensorValue):
 		return (',temperature={0:0.2f}'.format(temperature))
 	# UV Index
 	if (sensorName == 'uvindex') and (sensorValue == 'true'):
-		sensor = SI1145.SI1145()
 		#si1145 = uv.initUV()
 		UV = sensor.readUV()
 		uvIndex = UV / 100.0

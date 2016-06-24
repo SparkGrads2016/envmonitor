@@ -49,7 +49,7 @@ parser.read('envMonitorSettings.ini')
 #       print ('Section in config file does not appear to exist')
 
 # Process start time
-t0 = time.time()
+#t0 = time.time()
 
 # The string to output
 sensorPrint = ''
@@ -64,5 +64,5 @@ for sensorName,sensorValue in parser.items('sensors'):
 print (sensorPrint)
 
 # For debugging
-t3 = time.time()
-print ('Total process time = {0}'.format(t3-t0))
+#t3 = time.time()
+#print ('Total process time = {0}'.format(t3-t0))
