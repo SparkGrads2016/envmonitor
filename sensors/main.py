@@ -35,6 +35,19 @@ def sendFailure():
 parser = SafeConfigParser()
 parser.read('envMonitorSettings.ini')
 
+# For debugging. Prints out the contents of the config file
+#for section_name in parser.sections():
+#    print 'Section:', section_name
+#    print '  Options:', parser.options(section_name)
+#    for name, value in parser.items(section_name):
+#        print '  %s = %s' % (name, value)
+
+# Check if section in config file exists
+#if parser.has_section('sensors'):
+#       print ('Section correct')
+#else:
+#       print ('Section in config file does not appear to exist')
+
 # Process start time
 t0 = time.time()
 
@@ -46,7 +59,7 @@ for sensorName,sensorValue in parser.items('sensors'):
 	if (sensorValue != 'false'):
 		sensorPrint += str(init.parseSensor(sensorName,sensorValue))
 
-sendSuccess()
+#sendSuccess()
 
 print (sensorPrint)
 
