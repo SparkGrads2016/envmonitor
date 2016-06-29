@@ -6,6 +6,7 @@ import SI1145.SI1145 as SI1145
 import accelMagSensor as accelMag
 import windSensor as wind
 import RPi.GPIO as GPIO
+import math
 import time
 from time import strftime
 from ConfigParser import SafeConfigParser
@@ -26,6 +27,12 @@ def parseSensor(sensorName,sensorValue):
 	# Output type
 	if (sensorName == 'outputtype'):
 		return sensorValue
+	# Time
+	if (sensorName == 'time'):
+		return (',time=' + strftime("%Y-%m-%d"))
+	# Date
+	if (sensorName == 'date'):
+		return (',date=' + strftime("%H:%M:%S"))
 	# Location
 	if (sensorName == 'location'):
 		return (',location=' + sensorValue + ' ')
@@ -59,8 +66,14 @@ def parseSensor(sensorName,sensorValue):
 	# Magnetic Flux
 	if (sensorName == 'magneticflux') and (sensorValue == 'true'):
 		mag = accelMag.getMag()
-		mag_x, mag_y, mag_z = mag
-		return (',magX={0},magY={1},magZ={2}'.format(mag_x, mag_y, mag_z))
+		mag_x, mag_z, mag_y = mag
+		
+		bearing = (math.atan2(mag_y, mag_x) * 180) / math.pi
+		if (bearing < 0):
+			bearingAdj = 360 + int(bearing)
+		else:
+			bearingAdj = int(bearing)
+		return (',magX={0},magY={1},magZ={2},bearing={3}'.format(mag_x, mag_y, mag_z, bearingAdj))
 	# Sealevel Pressure
 	if (sensorName == 'sealevelpressure') and (sensorValue == 'true'):
 		sealevelPressure = BTA.getSealevelPressure()
