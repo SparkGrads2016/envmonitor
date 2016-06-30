@@ -29,10 +29,10 @@ def parseSensor(sensorName,sensorValue):
 		return sensorValue
 	# Time
 	if (sensorName == 'time'):
-		return (',time=' + strftime("%Y-%m-%d"))
+		return (',time=' + strftime("%H:%M:%S"))
 	# Date
 	if (sensorName == 'date'):
-		return (',date=' + strftime("%H:%M:%S"))
+		return (',date=' + strftime("%d/%m/%Y"))
 	# Location
 	if (sensorName == 'location'):
 		return (',location=' + sensorValue + ' ')
