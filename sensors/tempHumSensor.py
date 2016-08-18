@@ -1,47 +1,32 @@
 import sys
-import Adafruit_DHT
+from Adafruit_SHT31 import *
 
-sensor = 22 #DHT22 sensor
+SHT31 = SHT31(address = 0x044)
 
-# Un-comment the line below to convert the temperature to Fahrenheit.
-# temperature = temperature * 9/5.0 + 32
+def getTemp():
+    temperature = SHT31.read_temperature()
 
-#while True:
-    # Try to grab a sensor reading.  Use the read_retry method which will retry up
-    # to 15 times to get a sensor reading (waiting 2 seconds between each retry).
-#    humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
+    SHT31.clear_status()
+    SHT31.set_heater(True)
+
+    SHT31.set_heater(False)
     
-#    if humidity is not None and temperature is not None:
-#        print 'Temp={0:0.1f}*  Humidity={1:0.1f}%'.format(temperature, humidity)
-#    else:
-#	    print 'Failed to get reading. Try again!'
-#	    sys.exit(1)
-	    
-#    time.sleep(1.0)
-
-def getTempHum(pin):
-    humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
-    
-    if humidity is not None and temperature is not None:
-        return temperature, humidity
-    else:
-		print 'Failed to get temperature and humidity reading.'
-		sys.exit(1)
-	
-def getTemp(pin):
-    humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
-    
-    if humidity is not None and temperature is not None:
+    if temperature is not None:
         return temperature
     else:
-		print 'Failed to get temperature reading.'
-		sys.exit(1)
+	print 'Failed to get temperature reading.'
+	sys.exit(1)
 
-def getHum(pin):
-    humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
-    
-    if humidity is not None and temperature is not None:
+def getHum():
+    humidity = SHT31.read_humidity()
+
+    SHT31.clear_status()
+    SHT31.set_heater(True)
+
+    SHT31.set_heater(False)
+
+    if humidity is not None:
         return humidity
     else:
-		print 'Failed to get humidity reading.'
-		sys.exit(1)
+        print 'Failed to get humidity reading.'
+        sys.exit(1)

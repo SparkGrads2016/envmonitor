@@ -1,5 +1,5 @@
 import lightSensor as light
-#import tempHumSensor as tempHum
+import tempHumSensor as tempHum
 import baroTempAltSensor as BTA
 import uvSensor as uv
 import SI1145.SI1145 as SI1145
@@ -54,8 +54,8 @@ def parseSensor(sensorName,sensorValue):
 		return ('')
 	# Humidity
 	if (sensorName == 'humidity') and (sensorValue == 'true'):
-		#pinTempHum = 18 # Set the TempHum pin
-		return ('')
+		humidity = tempHum.getHum()
+		return (',humidity={0:0.2f}'.format(humidity))
 	# IR
 	if (sensorName == 'ir') and (sensorValue == 'true'):
 		return ('')
@@ -80,8 +80,8 @@ def parseSensor(sensorName,sensorValue):
 		return (',sealevelPressure={0:0.2f}'.format(sealevelPressure))
 	# Temperature
 	if (sensorName == 'temperature') and (sensorValue == 'true'):
-		temperature = BTA.getTemperature()
-		return (',temperature={0:0.2f}'.format(temperature))
+		temperature = tempHum.getTemp()
+                return (',temperature={0:0.2f}'.format(temperature))
 	# UV Index
 	if (sensorName == 'uvindex') and (sensorValue == 'true'):
 		#si1145 = uv.initUV()
