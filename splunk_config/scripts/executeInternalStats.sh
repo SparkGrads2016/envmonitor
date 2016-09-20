@@ -1,3 +1,4 @@
 #!/bin/bash
 
-/home/pi/Desktop/envmonitor/sensors/internalStats.sh
+/home/pi/gitRepos/envmonitorSpark/sensors/internalStats.sh
+

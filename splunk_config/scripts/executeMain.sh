@@ -1,3 +1,4 @@
 #!/bin/bash
 
-python "/home/pi/Desktop/envmonitor/sensors/main.py"
+python "/home/pi/gitRepos/envmonitorSpark/sensors/main.py"
+
