@@ -33,7 +33,7 @@ def sendFailure():
 
 # Initialise config parser and read in the config file 'envMonitorSettings.ini'
 parser = SafeConfigParser()
-parser.read('/home/pi/Desktop/envmonitor/sensors/envMonitorSettings.ini')
+parser.read('/home/pi/envmonitorSpark/sensors/envMonitorSettings.ini')
 
 # For debugging. Prints out the contents of the config file
 #for section_name in parser.sections():

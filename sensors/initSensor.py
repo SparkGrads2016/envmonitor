@@ -1,4 +1,4 @@
-import lightSensor as light
+#import lightSensor as light
 import tempHumSensor as tempHum
 import baroTempAltSensor as BTA
 import uvSensor as uv
@@ -60,9 +60,9 @@ def parseSensor(sensorName,sensorValue):
 	if (sensorName == 'ir') and (sensorValue == 'true'):
 		return ('')
 	# Lux (and full spectrum and IR for now)
-	if (sensorName == 'lux') and (sensorValue == 'true'):
-		lux, full, ir = light.getLight()
-		return (',lux=%d,fullSpectrum=%d,ir=%d' % (lux, full, ir))
+#	if (sensorName == 'lux') and (sensorValue == 'true'):
+#		lux, full, ir = light.getLight()
+#		return (',lux=%d,fullSpectrum=%d,ir=%d' % (lux, full, ir))
 	# Magnetic Flux
 	if (sensorName == 'magneticflux') and (sensorValue == 'true'):
 		mag = accelMag.getMag()
