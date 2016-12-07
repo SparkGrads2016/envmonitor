@@ -63,8 +63,8 @@ def parseSensor(sensorName,sensorValue):
 	
 	# Lux (and full spectrum and IR for now)
 	if (sensorName == 'lux') and (sensorValue == 'true'):
-		lux, vislight, infra = light.getLight()
-		return (',lux=%d,vislight=%d,infra=%d' % (lux, vislight, infra))
+		lux, vislight, infra = light.getLux()
+		return (',lux= % (lux))
 	# Magnetic Flux
 	if (sensorName == 'magneticflux') and (sensorValue == 'true'):
 		mag = accelMag.getMag()

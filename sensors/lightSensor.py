@@ -1,19 +1,38 @@
 import sys
-import tsl2591
+import Adafruit_TSL2561.TSL2561 as TSL2561
 
-# Initialise the light sensor
-#def initLight():
-#    tsl2591 = tsl2591.Tsl2591()  # initialise
-#    return tsl2591
+luxsensor = TSL2561.TSL2561()
 
-# Return the lux, full spectrum and IR light
-def getLight():
-    init = tsl2591.Tsl2591()
-    full, ir = init.get_full_luminosity()  # read raw values (full spectrum and ir spectrum)
-    lux = init.calculate_lux(full, ir)  # convert raw values to lux
-    
-    if lux is not None and full is not None and ir is not None:
-        return lux, full, ir
+def getLux():
+
+    lux = luxsensor.read_lux()
+
+    if lux is not None:
+        return lux
     else:
-        print 'Failed to get light reading.'
+        print 'Failed to get lux  reading.'
         sys.exit(1)
+
+def getVislight():
+
+    vislight = luxsensor.read_raw_luminosity()
+
+    if vislight is not None:
+        return vislight
+    else:
+        print 'Failed to get visible light reading.'
+        sys.exit(1)
+
+def getIR():
+
+    infra = luxsensor.read_raw_luminosity()
+
+    if infra is not None:
+        return infra
+    else:
+        print 'Failed to get IR reading.'
+        sys.exit(1)
+
+
+
+
