@@ -2,6 +2,7 @@ import sys
 import Adafruit_TSL2561.TSL2561 as TSL2561
 
 luxsensor = TSL2561.TSL2561()
+vislight, infra  = luxsensor.read_raw_luminosity()
 
 def getLux():
 
@@ -14,9 +15,6 @@ def getLux():
         sys.exit(1)
 
 def getVislight():
-
-    vislight = luxsensor.read_raw_luminosity()
-
     if vislight is not None:
         return vislight
     else:
@@ -24,15 +22,16 @@ def getVislight():
         sys.exit(1)
 
 def getIR():
-
-    infra = luxsensor.read_raw_luminosity()
-
     if infra is not None:
         return infra
     else:
         print 'Failed to get IR reading.'
         sys.exit(1)
 
+#lux = getLux()
+#vislight = getVislight()
+#ir = getIR()
 
-
+#print type(lux), type(vislight), type(ir)
+#print vislight, ir, lux
 
