@@ -1,5 +1,6 @@
 #!/bin/bash
 # installing all sensor drivers
+ 
 
 sudo apt-get update
 sudo apt-get install build-essential python-pip python-dev python-smbus git
@@ -44,14 +45,4 @@ git clone https://github.com/adafruit/Adafruit_Python_LSM303.git
 cd Adafruit_Python_LSM303
 sudo python setup.py install
 $GyroINS = $?
-cd examples
-sudo python simpletest.py
 cd ..
-
-
-#if [ $LuxIns -ne 0 ]; then
-#    echo "Installation ERROR"
-#else 
-#    echo "Installation SUCCESS"
-#fi
-
